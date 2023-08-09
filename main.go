@@ -139,15 +139,17 @@ func getAllEpisodes(token string) ([]episode, error) {
 }
 
 func openInSpotifyApp(uri string) {
+	trimmedURI := strings.TrimPrefix(uri, "spotify:")
+	httpURL := "https://open.spotify.com/" + strings.ReplaceAll(trimmedURI, ":", "/")
 	var cmd *exec.Cmd
 
 	switch runtime.GOOS {
 	case "linux":
-		cmd = exec.Command("xdg-open", uri)
+		cmd = exec.Command("xdg-open", httpURL)
 	case "windows":
-		cmd = exec.Command("cmd", "/c", "start", uri)
+		cmd = exec.Command("cmd", "/c", "start", httpURL)
 	case "darwin":
-		cmd = exec.Command("open", uri)
+		cmd = exec.Command("open", httpURL)
 	default:
 		fmt.Printf("Unsupported OS: %s\n", runtime.GOOS)
 		return
